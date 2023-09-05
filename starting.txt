@@ -1,1 +1,43 @@
-Hi, Valeriia
+These are some info for our 1st attempt
+
+1: this is a line gotten from a previous sampling made selecting province of Venezia
+
+{"VITTORIO GRAZIANI": {"indirizzo": "SESTIERE CANNAREGIO 2235, 30121, VENEZIA (VE) - (ambulatorio principale)", "comando": "submitLuogo('005513')"}, "MAURIZIO POSENATO": {"indirizzo": "SESTIERE CANNAREGIO 2235, 30121, VENEZIA (VE) - (ambulatorio principale)", "comando": "submitLuogo('005425')"}, "STEFANO GRANZOTTO": {"indirizzo": "SESTIERE CANNAREGIO 2235, 30121, VENEZIA (VE) - (ambulatorio principale)", "comando": "submitLuogo('005824')"}, "AMBRA PANCIERA": {"indirizzo": "SESTIERE CANNAREGIO 575, 30121, VENEZIA (VE) - (ambulatorio secondario)", "comando": "submitLuogo('005975')"}, "STEFANO ZANZOT": {"indirizzo": "SESTIERE SAN POLO 2642, 30125, VENEZIA (VE) - (ambulatorio principale)", "comando": "submitLuogo('006415')"}}
+
+
+as you can see we've gotten:
+last_name first_name, address, main clinic/secondary clinic (*), command(**)
+
+(*) each GP may work jointly with colleagues sharing a common clinic
+(**) use for scraping purposes, not meaningful
+
+Accordind this organization, GP's group constitutes an entity
+
+GP's_group (Entity)
+
+id
+address
+phone number
+
+
+GP (Entity)
+
+id
+belonging_group (if any)
+last, first name
+time_table (for main)
+regional_code (missing at the moment)
+
+Secondary_Clininc (Entity)
+
+id()
+address
+owner_GP
+phone_number
+time table 
+
+Each GP is labeled with a code (mine os 006760) but I can't say where to retrieve it (sooner or later we'll find this datum)
+
+Each main province's page holds 5 GP's data, except the last one 
+We can start by scannig only the province of Venezia. 
+Each scan must be archived together with the date of the scan. This registration will allow tracking of the temporal changes that will occur in the list.

@@ -20,7 +20,7 @@ def test():
     # driver = uc.Chrome(driver_executable_path= ChromeDriverManager(version='116.0.5845.141').install(), options=opts)
     driver = uc.Chrome(driver_executable_path="chromedriver", options=opts)
     wait = WebDriverWait(driver,30)
-    provinces = ['Belluno']   #['Belluno','Padova','Rovigo','Treviso','Venezia','Vicenza','Verona']
+    provinces = ['Belluno','Padova','Rovigo','Treviso','Venezia','Vicenza','Verona']
     week = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica']
     ambulatorio = ['Ambulatorio principale','Ambulatorio secondario','Ambulatorio terzo','Ambulatorio il quarto','Ambulatorio quinto','Ambulatorio sesto']
     page = 1
@@ -75,7 +75,7 @@ def test():
                 print(page,data_list[0])
                 r= json.dumps(formated)
                 # print(json.loads(r))
-                with open('test.txt', 'w',encoding='utf-8') as json_file:
+                with open(province+'.txt', 'w',encoding='utf-8') as json_file:
                     # json_file.write(json.loads(r))
                     json.dump(json.loads(r), json_file, ensure_ascii=False)
                 driver.back()

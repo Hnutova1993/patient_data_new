@@ -13,13 +13,19 @@ last_name first_name, address, main clinic/secondary clinic (*), command(**)
 
 According this organization, GP's group constitutes an entity
 
+===================
 GP's_group (Entity)
 
 id
 address
 phone number
 
+=====================
+GP's_network (Entity)
 
+id
+
+===========
 GP (Entity)
 
 id
@@ -31,6 +37,7 @@ last, first name
 time_table (for main, not necessary in this 1st stage)
 regional_code 
 
+==========================
 Secondary_Clininc (Entity)
 
 id

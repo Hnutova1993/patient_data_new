@@ -24,6 +24,9 @@ GP (Entity)
 
 id
 belonging_group (if any)
+*************
+group_type (0,1,2,3)
+*************
 last, first name
 time_table (for main)
 regional_code (missing at the moment)
@@ -52,3 +55,7 @@ Types of GPs association:
 THE SAME ADDRESS (unfortunately sometimes with minor changes)
 4) integrated group. From informatic pow this kind of association does non exhibit any difference form 3. Actually it offers a larger list of
 services
+
+***********************
+we'll have to devise a way to manage this differences
+***********************

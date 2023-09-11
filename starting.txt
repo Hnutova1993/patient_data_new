@@ -28,8 +28,8 @@ belonging_group (if any)
 group_type (0,1,2,3)
 *************
 last, first name
-time_table (for main)
-regional_code (missing at the moment)
+time_table (for main, not necessary in this 1st stage)
+regional_code 
 
 Secondary_Clininc (Entity)
 
@@ -37,7 +37,7 @@ id
 address
 owner_GP
 phone_number
-time table 
+time table (not necessary in this 1st stage)
 
 Each GP is labeled with a code (mine os 006760) but I can't say where to retrieve it (sooner or later we'll find this datum)
 

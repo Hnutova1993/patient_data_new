@@ -41,6 +41,12 @@ cursor.execute("SET FOREIGN_KEY_CHECKS=0")
 
 opts = uc.ChromeOptions()
 driver = uc.Chrome(driver_executable_path="chromedriver", options=opts)
+wait = WebDriverWait(driver,30)
+provinces = ['Belluno','Padova','Rovigo','Treviso','Venezia','Vicenza','Verona']
+week = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica']
+ambulatorio = ['Ambulatorio principale','Ambulatorio secondario','Ambulatorio terzo','Ambulatorio il quarto','Ambulatorio quinto','Ambulatorio sesto']
+
+
 
 Q4 = "INSERT INTO GPs (id, name, group_type) VALUES (%s, %s, %s)"
 Q5 = "INSERT INTO Second_Clinic (userId, address, phone_number) VALUES (%s, %s, %s)"
@@ -54,14 +60,14 @@ def test():
     # driver = uc.Chrome(driver_executable_path= ChromeDriverManager(version='116.0.5845.141').install(), options=opts)
     
     # driver = uc.Chrome(driver_executable_path="chromedriver", options=opts)
-    wait = WebDriverWait(driver,30)
-    provinces = ['Belluno','Padova','Rovigo','Treviso','Venezia','Vicenza','Verona']
-    week = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica']
-    ambulatorio = ['Ambulatorio principale','Ambulatorio secondario','Ambulatorio terzo','Ambulatorio il quarto','Ambulatorio quinto','Ambulatorio sesto']
-    page = 1
-    formated = {}
-    #scanProvince("Venezia")
-    scanAll(provinces)
+    #wait = WebDriverWait(driver,30)
+    #provinces = ['Belluno','Padova','Rovigo','Treviso','Venezia','Vicenza','Verona']
+    #week = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica']
+    #ambulatorio = ['Ambulatorio principale','Ambulatorio secondario','Ambulatorio terzo','Ambulatorio il quarto','Ambulatorio quinto','Ambulatorio sesto']
+    #page = 1
+    #formated = {}
+    scanProvince("Venezia")
+    #scanAll(provinces)
 
 def scanAll(provinces):    
     for province in provinces:
@@ -75,6 +81,8 @@ def scanProvince(province):
     drop=Select(driver.find_element(By.ID, 'tipologiaChangeEvent'))
     drop.select_by_visible_text('Medici di Medicina Generale')
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "#button1 > input"))).click()
+    page = 1
+    formated = {}
     while True:
         driver.get(GP_link.format(page = str(page)))
         elements = [el.get_attribute('onclick') for el in wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "poi")))]
@@ -126,7 +134,7 @@ def scanProvince(province):
                 else:
                     group_id = 2
 
-            print(page,data_list[0],"regoin code : ", re.sub("\D", "", ele), "group id : ", group_id)
+            print(page,data_list[0],"region code : ", re.sub("\D", "", ele), "group id : ", group_id)
 
             r= json.dumps(formated)
             # print(json.loads(r))

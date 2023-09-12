@@ -39,102 +39,116 @@ cursor.execute(Q3)
 
 cursor.execute("SET FOREIGN_KEY_CHECKS=0")
 
+opts = uc.ChromeOptions()
+driver = uc.Chrome(driver_executable_path="chromedriver", options=opts)
+
 Q4 = "INSERT INTO GPs (id, name, group_type) VALUES (%s, %s, %s)"
 Q5 = "INSERT INTO Second_Clinic (userId, address, phone_number) VALUES (%s, %s, %s)"
 Q6 = "INSERT INTO GPs_Group (userId, address, phone_number) VALUES (%s, %s, %s)"
 
 def test():
-    opts = uc.ChromeOptions()
+    """
+    converted into global var
+    """
+    #opts = uc.ChromeOptions()
     # driver = uc.Chrome(driver_executable_path= ChromeDriverManager(version='116.0.5845.141').install(), options=opts)
-    driver = uc.Chrome(driver_executable_path="chromedriver", options=opts)
+    
+    # driver = uc.Chrome(driver_executable_path="chromedriver", options=opts)
     wait = WebDriverWait(driver,30)
-    provinces = ['Belluno']   #['Belluno','Padova','Rovigo','Treviso','Venezia','Vicenza','Verona']
+    provinces = ['Belluno','Padova','Rovigo','Treviso','Venezia','Vicenza','Verona']
     week = ['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica']
     ambulatorio = ['Ambulatorio principale','Ambulatorio secondario','Ambulatorio terzo','Ambulatorio il quarto','Ambulatorio quinto','Ambulatorio sesto']
     page = 1
     formated = {}
+    #scanProvince("Venezia")
+    scanAll(provinces)
+
+def scanAll(provinces):    
     for province in provinces:
+        scanProvince(province)
 
-        driver.get(base_link)
-        drop=Select(driver.find_element(By.ID, 'provinciaChangeEvent'))
-        drop.select_by_visible_text(province)
-        drop=Select(driver.find_element(By.ID, 'tipologiaChangeEvent'))
-        drop.select_by_visible_text('Medici di Medicina Generale')
-        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "#button1 > input"))).click()
-        while True:
-            driver.get(GP_link.format(page = str(page)))
-            elements = [el.get_attribute('onclick') for el in wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "poi")))]
-            for ele in elements:
-                driver.execute_script(ele)
-                data = wait.until(EC.presence_of_element_located((By.ID, "tab01"))).text
-                data_list = data.split('\n')
-                while("" in data_list):
-                    data_list.remove("")
+def scanProvince(province):
 
-                table = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "results")))
+    driver.get(base_link)
+    drop=Select(driver.find_element(By.ID, 'provinciaChangeEvent'))
+    drop.select_by_visible_text(province)
+    drop=Select(driver.find_element(By.ID, 'tipologiaChangeEvent'))
+    drop.select_by_visible_text('Medici di Medicina Generale')
+    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "#button1 > input"))).click()
+    while True:
+        driver.get(GP_link.format(page = str(page)))
+        elements = [el.get_attribute('onclick') for el in wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "poi")))]
+        for ele in elements:
+            driver.execute_script(ele)
+            data = wait.until(EC.presence_of_element_located((By.ID, "tab01"))).text
+            data_list = data.split('\n')
+            while("" in data_list):
+                data_list.remove("")
 
-                result1 = html_to_json(table[0].get_attribute('innerHTML')).replace("\\u00e0","")
-                last_name = [s for s in data_list if "COGNOME" in s]
-                if len(last_name) > 0 :
-                    result3 = html_to_json(table[len(table)-1].get_attribute('innerHTML')).replace("\\n","")
-                else:
-                    result3 = ""
-                # address = data_list[data_list.index('Ambulatorio principale')+1]
-                phone_indexes = [i for i,s in enumerate(data_list) if "Telefono" in s]
-                result2 = {}
-                for idx, phone_index in enumerate(phone_indexes):
-                    address = data_list[phone_index - 1]
-                    phone = data_list[phone_index].split(":")[1].strip()
-                    # print(address, phone)
-                    time_table={}
-                    try:
-                        sub = data_list[phone_index:phone_indexes[idx+1]]
-                    except:
-                        sub = data_list[phone_index:]
-                    for day  in week:                        
-                        if time_validation(sub[sub.index(day)+1].split("-")[0].strip()):
-                            time_table[day]=sub[sub.index(day)+1]
+            table = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "results")))
 
-                    result2[ambulatorio[idx]] = {"address": address, "phone": phone, "time_table":time_table}
-
-                # print(data_list)
-                if result3 == "":
-                    formated[data_list[0]] = {"1st_pane":{"1": data_list[1],"time_table":json.loads(result1)},"2nd_pane":result2}
-                    group_id = 0
-                else:                                            
-                    formated[data_list[0]] = {"1st_pane":{"1": data_list[1],"time_table":json.loads(result1)},"2nd_pane":result2,"3rd_pane":json.loads(result3)}
-                    s = 0
-                    for d in json.loads(result3):
-                        s += similar(result2['Ambulatorio principale']['address'], d['ambulatorio principale'])
-                    rate = s / len(json.loads(result3))
-                    if rate < 0.8:
-                        group_id = 1
-                    else:
-                        group_id = 2
-
-                print(page,data_list[0],"regoin code : ", re.sub("\D", "", ele), "group id : ", group_id)
-
-                r= json.dumps(formated)
-                # print(json.loads(r))
-                cursor.execute(Q4, (re.sub("\D", "", ele),data_list[0],group_id))
+            result1 = html_to_json(table[0].get_attribute('innerHTML')).replace("\\u00e0","")
+            last_name = [s for s in data_list if "COGNOME" in s]
+            if len(last_name) > 0 :
+                result3 = html_to_json(table[len(table)-1].get_attribute('innerHTML')).replace("\\n","")
+            else:
+                result3 = ""
+            # address = data_list[data_list.index('Ambulatorio principale')+1]
+            phone_indexes = [i for i,s in enumerate(data_list) if "Telefono" in s]
+            result2 = {}
+            for idx, phone_index in enumerate(phone_indexes):
+                address = data_list[phone_index - 1]
+                phone = data_list[phone_index].split(":")[1].strip()
+                # print(address, phone)
+                time_table={}
                 try:
-                    print(result2['Ambulatorio secondario'])
-                    cursor.execute(Q5, (re.sub("\D", "", ele), result2['Ambulatorio secondario']['address'],result2['Ambulatorio secondario']['phone']))
-                except KeyError:
-                    # cursor.execute(Q4, (re.sub("\D", "", ele), "NULL","NULL"))
-                    pass
-                cursor.execute(Q6, (re.sub("\D", "", ele), result2['Ambulatorio principale']['address'],result2['Ambulatorio principale']['phone']))
+                    sub = data_list[phone_index:phone_indexes[idx+1]]
+                except:
+                    sub = data_list[phone_index:]
+                for day  in week:                        
+                    if time_validation(sub[sub.index(day)+1].split("-")[0].strip()):
+                        time_table[day]=sub[sub.index(day)+1]
 
-                db.commit()
-                with open('test.txt', 'w',encoding='utf-8') as json_file:
-                    # json_file.write(json.sloads(r))
-                    json.dump(json.loads(r), json_file, ensure_ascii=False)
-                driver.back()
+                result2[ambulatorio[idx]] = {"address": address, "phone": phone, "time_table":time_table}
+
+            # print(data_list)
+            if result3 == "":
+                formated[data_list[0]] = {"1st_pane":{"1": data_list[1],"time_table":json.loads(result1)},"2nd_pane":result2}
+                group_id = 0
+            else:                                            
+                formated[data_list[0]] = {"1st_pane":{"1": data_list[1],"time_table":json.loads(result1)},"2nd_pane":result2,"3rd_pane":json.loads(result3)}
+                s = 0
+                for d in json.loads(result3):
+                    s += similar(result2['Ambulatorio principale']['address'], d['ambulatorio principale'])
+                rate = s / len(json.loads(result3))
+                if rate < 0.8:
+                    group_id = 1
+                else:
+                    group_id = 2
+
+            print(page,data_list[0],"regoin code : ", re.sub("\D", "", ele), "group id : ", group_id)
+
+            r= json.dumps(formated)
+            # print(json.loads(r))
+            cursor.execute(Q4, (re.sub("\D", "", ele),data_list[0],group_id))
+            try:
+                print(result2['Ambulatorio secondario'])
+                cursor.execute(Q5, (re.sub("\D", "", ele), result2['Ambulatorio secondario']['address'],result2['Ambulatorio secondario']['phone']))
+            except KeyError:
+                # cursor.execute(Q4, (re.sub("\D", "", ele), "NULL","NULL"))
+                pass
+            cursor.execute(Q6, (re.sub("\D", "", ele), result2['Ambulatorio principale']['address'],result2['Ambulatorio principale']['phone']))
+
+            db.commit()
+            with open('test.txt', 'w',encoding='utf-8') as json_file:
+                # json_file.write(json.sloads(r))
+                json.dump(json.loads(r), json_file, ensure_ascii=False)
+            driver.back()
 
 
-            page += 1
-            if len(elements) != 5:
-                break
+        page += 1
+        if len(elements) != 5:
+            break
 
 
 def time_validation(stime): 

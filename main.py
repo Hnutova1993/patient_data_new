@@ -111,10 +111,15 @@ def scanProvince(province):
                 result3 = ""
             # address = data_list[data_list.index('Ambulatorio principale')+1]
             phone_indexes = [i for i,s in enumerate(data_list) if "Telefono" in s]
+            if len(phone_indexes) == 0:
+                phone_indexes.append(data_list.index("Ambulatorio principale")+2)
             result2 = {}
             for idx, phone_index in enumerate(phone_indexes):
                 address = data_list[phone_index - 1]
-                phone = data_list[phone_index].split(":")[1].strip()
+                try:
+                    phone = data_list[phone_index].split(":")[1].strip()
+                except:
+                    phone = "N/A"
                 # print(address, phone)
                 time_table={}
                 

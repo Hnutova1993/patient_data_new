@@ -51,6 +51,8 @@ Q4 = "INSERT INTO GPs (id, name, group_type,province) VALUES (%s, %s, %s,%s)"
 Q5 = "INSERT INTO Second_Clinic (userId, address, phone_number) VALUES (%s, %s, %s)"
 Q6 = "INSERT INTO GPs_Group (userId, address, phone_number) VALUES (%s, %s, %s)"
 
+Q7 = "SELECT * FROM GPs WHERE id =%s"
+
 def test():
     """
     converted into global var
@@ -86,6 +88,13 @@ def scanProvince(province):
         driver.get(GP_link.format(page = str(page)))
         elements = [el.get_attribute('onclick') for el in wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "poi")))]
         for ele in elements:
+            cursor.execute(Q7,[re.sub("\D", "", ele)])
+
+            res = cursor.fetchall()
+            if len(res) > 0:
+                print("exist")
+                continue
+
             driver.execute_script(ele)
             data = wait.until(EC.presence_of_element_located((By.ID, "tab01"))).text
             data_list = data.split('\n')
@@ -138,11 +147,9 @@ def scanProvince(province):
 
             r= json.dumps(formated)
             # print(json.loads(r))
-            try:
-                cursor.execute(Q4, (re.sub("\D", "", ele),data_list[0],group_id,province))
-            except:
-                driver.back()
-                continue
+
+            cursor.execute(Q4, (re.sub("\D", "", ele),data_list[0],group_id,province))
+
 
             try:
                 print(result2['Ambulatorio secondario'])

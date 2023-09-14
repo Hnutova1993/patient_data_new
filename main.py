@@ -138,7 +138,12 @@ def scanProvince(province):
 
             r= json.dumps(formated)
             # print(json.loads(r))
-            cursor.execute(Q4, (re.sub("\D", "", ele),data_list[0],group_id,province))
+            try:
+                cursor.execute(Q4, (re.sub("\D", "", ele),data_list[0],group_id,province))
+            except:
+                driver.back()
+                continue
+
             try:
                 print(result2['Ambulatorio secondario'])
                 cursor.execute(Q5, (re.sub("\D", "", ele), result2['Ambulatorio secondario']['address'],result2['Ambulatorio secondario']['phone']))

@@ -108,6 +108,7 @@ def scanProvince(province):
                 phone = data_list[phone_index].split(":")[1].strip()
                 # print(address, phone)
                 time_table={}
+                
                 try:
                     sub = data_list[phone_index:phone_indexes[idx+1]]
                 except:

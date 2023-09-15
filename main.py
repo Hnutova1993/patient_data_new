@@ -127,9 +127,12 @@ def scanProvince(province):
                     sub = data_list[phone_index:phone_indexes[idx+1]]
                 except:
                     sub = data_list[phone_index:]
-                for day  in week:                        
-                    if time_validation(sub[sub.index(day)+1].split("-")[0].strip()):
-                        time_table[day]=sub[sub.index(day)+1]
+                for day  in week:
+                    try:                        
+                        if time_validation(sub[sub.index(day)+1].split("-")[0].strip()):
+                            time_table[day]=sub[sub.index(day)+1]
+                    except:
+                        continue
 
                 result2[ambulatorio[idx]] = {"address": address, "phone": phone, "time_table":time_table}
 

@@ -10,6 +10,7 @@ import re
 import time
 import os
 import json
+import sys
 from datetime import datetime
 import mysql.connector
 from difflib import SequenceMatcher
@@ -86,7 +87,10 @@ def scanProvince(province):
     formated = {}
     while True:
         driver.get(GP_link.format(page = str(page)))
-        elements = [el.get_attribute('onclick') for el in wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "poi")))]
+        try:
+            elements = [el.get_attribute('onclick') for el in wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "poi")))]
+        except TimeoutError:
+            sys.exit()
         for ele in elements:
             cursor.execute(Q7,[re.sub("\D", "", ele)])
 

@@ -51,7 +51,6 @@ ambulatorio = ['Ambulatorio principale','Ambulatorio secondario','Ambulatorio te
 Q4 = "INSERT INTO GPs (id, name, group_type,province) VALUES (%s, %s, %s,%s)"
 Q5 = "INSERT INTO Second_Clinic (userId, address, phone_number) VALUES (%s, %s, %s)"
 Q6 = "INSERT INTO GPs_Group (userId, address, phone_number) VALUES (%s, %s, %s)"
-
 Q7 = "SELECT * FROM GPs WHERE id =%s"
 
 def test():
@@ -68,7 +67,9 @@ def test():
     #ambulatorio = ['Ambulatorio principale','Ambulatorio secondario','Ambulatorio terzo','Ambulatorio il quarto','Ambulatorio quinto','Ambulatorio sesto']
     #page = 1
     #formated = {}
-    scanProvince("Venezia")
+    start = time.time()
+    scanProvince("Verona")
+    print("tempo: "+str(time.time()-start))
     #scanAll(provinces)
 
 def scanAll(provinces):    
@@ -83,6 +84,14 @@ def scanProvince(province):
     drop=Select(driver.find_element(By.ID, 'tipologiaChangeEvent'))
     drop.select_by_visible_text('Medici di Medicina Generale')
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "#button1 > input"))).click()
+    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "#map-results > div > ul > li:nth-child(10) > a > img"))).click()
+    #find last page
+    els=driver.find_elements(By.XPATH,'//*[@id="map-results"]/div/ul/li')
+    last = els[len(els)-1].text
+
+    #goto 1st page
+    driver.back()
+
     page = 1
     formated = {}
     while True:
@@ -155,7 +164,7 @@ def scanProvince(province):
                 else:
                     group_id = 2
 
-            print(page,data_list[0],"region code : ", re.sub("\D", "", ele), "group id : ", group_id,province)
+            print(page,"/",last,data_list[0],"region code : ", re.sub("\D", "", ele), "group id : ", group_id,province)
 
             r= json.dumps(formated)
             # print(json.loads(r))

@@ -68,7 +68,7 @@ def test():
     #page = 1
     #formated = {}
     start = time.time()
-    scanProvince("Verona")
+    scanProvince("Belluno")
     print("tempo: "+str(time.time()-start))
     #scanAll(provinces)
 

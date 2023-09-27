@@ -20,8 +20,8 @@ GP_link = "https://salute.regione.veneto.it/servizi/cerca-medici-e-pediatri?p_p_
 
 db = mysql.connector.connect(
   host="app.lagoonmed.eu",
-  user="root",
-  password="P@xtibi2021!",
+  user="gpuser",
+  password="P@xtibi2023",
   database="gp"
 )
 

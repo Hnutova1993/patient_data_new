@@ -1,11 +1,7 @@
-import pandas as pd
-import mysql.connector as conn
+from flask import Flask
 
+app = Flask(__name__)
 
-try:
-    mydb = conn.connect(host = "app.lagoonmed.eu",database="gp",user="root",password="P@xtibi2021!")
-    mf = pd.read_sql("select * from gps",mydb)
-except Exception as e:
-    print(e)
-
-mydb.close()
+@app.route("/")
+def hello_world():
+    return "<p>Hello, World!</p>"

@@ -20,8 +20,8 @@ GP_link = "https://salute.regione.veneto.it/servizi/cerca-medici-e-pediatri?p_p_
 
 db = mysql.connector.connect(
   host="app.lagoonmed.eu",
-  user="root",
-  password="P@xtibi2021!",
+  user="gpuser",
+  password="P@xtibi2023",
   database="gp"
 )
 
@@ -68,7 +68,7 @@ def test():
     #page = 1
     #formated = {}
     start = time.time()
-    scanProvince("Belluno")
+    scanProvince("Rovigo")
     print("tempo: "+str(time.time()-start))
     #scanAll(provinces)
 
@@ -188,7 +188,8 @@ def scanProvince(province):
 
 
         page += 1
-        if len(elements) != 5:
+        #minor change
+        if len(elements) != 5 | page > int(last):
             break
 
 

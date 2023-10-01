@@ -22,7 +22,7 @@ db = mysql.connector.connect(
   host="app.lagoonmed.eu",
   user="root",
   password="P@xtibi2021!",
-  database="gptest"
+  database="temp"
 )
 
 
@@ -156,6 +156,9 @@ def scanProvince(province):
             else:                                            
                 formated[data_list[0]] = {"1st_pane":{"1": data_list[1],"time_table":json.loads(result1)},"2nd_pane":result2,"3rd_pane":json.loads(result3)}
                 s = 0
+                """ 
+                start collecting group members
+                """
                 for d in json.loads(result3):
                     s += similar(result2['Ambulatorio principale']['address'], d['ambulatorio principale'])
                 rate = s / len(json.loads(result3))

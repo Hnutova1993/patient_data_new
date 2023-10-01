@@ -1,7 +1,5 @@
-from flask import Flask
+import utility as u
 
-app = Flask(__name__)
 
-@app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
+a=u.get_group(6760)
+a=1
